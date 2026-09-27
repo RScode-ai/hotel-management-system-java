@@ -1,110 +1,115 @@
-# Hotel Management System
+﻿# Hotel Management System
 
-A console-based Hotel Management System built with **Java, JDBC, and MySQL**, using a layered architecture (Model–DAO–Service). Built as a B.Tech portfolio project to demonstrate Core Java, OOP, JDBC, SQL, exception handling, and transaction management.
+This project was developed locally in IntelliJ IDEA for managing hotel operations using Java, JDBC, and MySQL. It is a console-based application for handling rooms, guests, bookings, payments, and reports.
+
+The project was created as a practical learning exercise to strengthen Java programming, database connectivity, OOP principles, and transactional database workflows.
+
+## Tech Stack
+
+- Java 17
+- Maven
+- MySQL
+- JDBC
+- IntelliJ IDEA
 
 ## Features
 
-- **Authentication** — role-based login (ADMIN / RECEPTIONIST) via MySQL, using `PreparedStatement`
-- **Room Management** — add, view, search, update, delete rooms; check availability
-- **Guest Management** — add, view, search, update, delete guests with input validation
-- **Booking Management** — create/cancel/view bookings, with date and availability validation
-- **Check-In / Check-Out** — status-driven workflow with room status sync
-- **Billing** — auto-calculated bill (room charges, tax, discount, total)
-- **Payment Management** — record and view payments (CASH/CARD/UPI)
-- **Reports** — room/guest/booking counts, total revenue, and a joined booking+guest+room report
-- **Transactions** — booking creation, cancellation, and check-out use JDBC transactions (`commit`/`rollback`) so room status and booking status stay in sync
-- **Validation & Exceptions** — custom `ValidationException`, `BookingException`, `DatabaseException`; no crashes on bad input
-
-## Technologies Used
-
-Java 17+, JDBC, MySQL 8+, MySQL Connector/J, Maven, IntelliJ IDEA.
-
-## Project Architecture
-
-```
-Main.java  →  Service layer (business logic)  →  DAO layer (JDBC/SQL)  →  MySQL
-```
+- Admin and receptionist login
+- Add, view, update, and delete rooms
+- Add, view, update, and delete guests
+- Create and track bookings
+- Check room availability
+- Check-in and check-out workflow
+- Billing and payment handling
+- Reports for rooms, guests, bookings, and revenue
+- Transaction-based updates for booking-related operations
 
 ## Project Structure
 
-```
+```text
 hotel-management-system/
 ├── pom.xml
+├── README.md
+├── .gitignore
 ├── database/
 │   └── hotel_management.sql
-├── src/main/
-│   ├── java/com/hotel/
-│   │   ├── Main.java
-│   │   ├── config/DatabaseConnection.java
-│   │   ├── model/        (User, Room, Guest, Booking, Payment + enums)
-│   │   ├── dao/          (UserDAO, RoomDAO, GuestDAO, BookingDAO, PaymentDAO)
-│   │   ├── service/      (Authentication, Room, Guest, Booking, Payment, Report)
-│   │   ├── exception/    (DatabaseException, ValidationException, BookingException)
-│   │   └── util/         (InputValidator, DateUtil, ConsoleUtil)
-│   └── resources/db.properties
-└── README.md
+├── src/
+│   └── main/
+│       ├── java/com/hotel/
+│       │   ├── Main.java
+│       │   ├── config/
+│       │   ├── dao/
+│       │   ├── exception/
+│       │   ├── model/
+│       │   ├── service/
+│       │   └── util/
+│       └── resources/
+│           └── db.properties
+└── target/
 ```
 
-## Database Design
+## Database Setup
 
-5 tables: `users`, `rooms`, `guests`, `bookings`, `payments`, connected with foreign keys (`bookings.guest_id → guests`, `bookings.room_id → rooms`, `payments.booking_id → bookings`). See `database/hotel_management.sql` for full DDL + sample data (2 users, 10 rooms, 5 guests).
+1. Install and start MySQL on your machine.
+2. Open MySQL terminal or MySQL Workbench.
+3. Run the provided SQL script:
 
-## Setup Instructions
-
-### 1. MySQL Setup
-1. Install/start MySQL Server 8+.
-2. Run the script to create the database, tables, and sample data:
-   ```
-   mysql -u root -p < database/hotel_management.sql
-   ```
-
-### 2. Configure Database Connection
-Edit `src/main/resources/db.properties`:
+```bash
+mysql -u root -p < database/hotel_management.sql
 ```
+
+This script creates the `hotel_management` database and inserts sample data.
+
+## IntelliJ IDEA Setup
+
+1. Open IntelliJ IDEA.
+2. Select `File -> Open` and choose this project folder.
+3. Let Maven import the project automatically.
+4. Ensure Java 17 is selected in the project SDK.
+5. Update the database configuration in `src/main/resources/db.properties`.
+
+Example:
+
+```properties
 db.url=jdbc:mysql://localhost:3306/hotel_management
 db.username=root
-db.password=YOUR_PASSWORD
+db.password=your_mysql_password
 ```
 
-## How to Run in IntelliJ IDEA
+## Run the Application
 
-1. **Open Project**: `File → Open` → select the `hotel-management-system` folder. IntelliJ will detect `pom.xml` and import it as a Maven project (it downloads MySQL Connector/J automatically).
-2. **Set Java 17+**: `File → Project Structure → Project` → set SDK to 17 or higher.
-3. **Set your DB password** in `src/main/resources/db.properties`.
-4. **Run MySQL script** (Setup step 1 above) so the database exists.
-5. **Run the app**: open `src/main/java/com/hotel/Main.java` → click the green ▶ next to `public static void main`.
-6. Interact with the menu in the **Run** console at the bottom.
+Run directly from IntelliJ:
 
-### Run from terminal (alternative)
-```
+1. Open `src/main/java/com/hotel/Main.java`
+2. Click the Run button
+3. Use the console menu to interact with the application
+
+Optional terminal command:
+
+```bash
 mvn clean package
 java -cp target/hotel-management-system-jar-with-dependencies.jar com.hotel.Main
 ```
 
-## Sample Login
+## Default Login Credentials
 
-| Username  | Password      | Role         |
-|-----------|---------------|--------------|
-| admin     | admin123      | ADMIN        |
-| reception | reception123  | RECEPTIONIST |
+| Username | Password | Role |
+|----------|----------|------|
+| admin | admin123 | ADMIN |
+| reception | reception123 | RECEPTIONIST |
 
-> Passwords are stored in plain text in this version — a documented learning-project limitation (see Security Basics below). Hashing (e.g. BCrypt) is a natural next step.
+## Notes
 
-## Security Basics Implemented
-
-- All SQL uses `PreparedStatement` — no string-concatenated queries
-- Database credentials kept in `db.properties`, not hardcoded in source, and excluded via `.gitignore`
-- Input validated before hitting the database
-- Passwords never printed to console
+- Database credentials are stored in `db.properties` and should not be shared publicly.
+- This is a learning project created for Java and database practice.
+- Passwords are currently stored in plain text in the sample database, which can be improved later with hashing.
 
 ## Future Improvements
 
-- Password hashing (BCrypt)
-- GUI (JavaFX/Swing) or REST API (Spring Boot) front end
-- Connection pooling (HikariCP)
-- Unit tests (JUnit + Mockito) for the service layer
-- Pagination for large guest/room/booking lists
+- Add BCrypt password hashing
+- Improve input validation and exception handling
+- Add GUI support using JavaFX or Swing
+- Add JUnit test cases
+- Improve reporting and filtering features
 
-## Verified Working
-
-This project was compiled end-to-end with `javac` (30 source files, zero errors) and smoke-tested at runtime: the menu, login flow, and database-error handling all behave as expected. Once pointed at a running MySQL instance with the schema loaded, all CRUD, booking, check-in/out, billing, payment, and report features are fully functional.
+This project is a local Java-based hotel management system built in IntelliJ IDEA and designed to demonstrate real-world database-driven application development.
