@@ -1,7 +1,1 @@
-target/
 *.class
-.idea/
-*.iml
-out/
-db.properties.local
-.DS_Store
